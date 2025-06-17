@@ -1,0 +1,356 @@
+/* Основные стили для страницы продукта */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1a1e2d;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.single_breadcrumb {
+    padding-top: 25px;
+}
+
+.single_preview_product img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.single_preview_content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #ff79c6;
+}
+
+.s-price span {
+    font-size: 1.8rem;
+    color: #50fa7b;
+}
+
+.viewcontent__action {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.viewcontent__action input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2e3440;
+    color: #fff;
+}
+
+.viewcontent__action a {
+    padding: 10px 20px;
+    background-color: #ff79c6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.viewcontent__action a:hover {
+    background-color: #bd93f9;
+}
+/* =====================================
+   Стили для секции Отзывов (Reviews) - в стиле AnimeKicks (Полный код)
+   ===================================== */
+
+/* Общий фон секции, чтобы он сочетался с основным фоном сайта */
+.single_product_long_desc {
+    background-color: #1A1A2E; /* Очень темный, почти черный фон */
+    color: #E0E0E0; /* Светлый текст */
+    padding: 60px 0; /* Увеличим отступы для лучшего вида */
+    margin-bottom: 60px;
+}
+
+/* Стили для вкладок навигации */
+.categories__tab ul.nav-tabs {
+    border-bottom: 1px solid #3A3A5A; /* Более мягкая линия под вкладками */
+    margin-bottom: 35px; /* Увеличим отступ от контента вкладок */
+    justify-content: center; /* Центрируем вкладки */
+}
+
+.categories__tab .nav-link {
+    color: #9A9AAB; /* Приглушенный светло-серый для неактивных вкладок */
+    border: none; /* Убираем рамки */
+    border-radius: 0; /* Прямые углы */
+    padding: 12px 25px; /* Увеличим паддинг */
+    margin: 0 5px; /* Небольшой отступ между вкладками */
+    background-color: transparent;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 1em; /* Чуть крупнее шрифт */
+    letter-spacing: 0.5px;
+}
+
+.categories__tab .nav-link:hover {
+    color: #ffffff; /* Цвет при наведении */
+    background-color: #2A2A4A; /* Слегка темнее фон при наведении */
+}
+
+.categories__tab .nav-link.active {
+    color: #E950B8; /* Акцентный пурпурный цвет для активной вкладки */
+    background-color: #2A2A4A; /* Фон активной вкладки */
+    position: relative; /* Для псевдоэлемента подчеркивания */
+    font-weight: 600;
+}
+
+.categories__tab .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; /* Накладывается на border-bottom */
+    left: 0;
+    width: 100%;
+    height: 3px; /* Толщина подчеркивания */
+    background: linear-gradient(to right, #E950B8, #6A5ACD); /* Градиентное подчеркивание */
+    border-radius: 2px;
+}
+
+
+/* Стили для содержимого вкладок */
+.tab-content {
+    padding: 30px 0; /* Увеличим отступы */
+}
+
+.single_product_description {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.single_product_description h2.title-5 {
+    color: #ffffff; /* Цвет заголовков */
+    font-size: 2.2em; /* Крупнее заголовок */
+    margin-bottom: 30px;
+    border-bottom: none; /* Убираем стандартное подчеркивание */
+    padding-bottom: 0;
+    display: block; /* Заголовок занимает всю ширину */
+    text-shadow: 0 0 10px rgba(233, 80, 184, 0.3); /* Легкое свечение */
+}
+
+/* --- Стили для списка отзывов --- */
+.reviews-list {
+    margin-top: 30px;
+    max-width: 850px; /* Немного шире */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.review-item {
+    background-color: #2A2A4A; /* Темный фон для каждого отзыва, чуть светлее основного */
+    border: 1px solid #3A3A5A; /* Более тонкая, мягкая граница */
+    border-radius: 12px; /* Чуть более скругленные углы */
+    padding: 25px 30px; /* Увеличим паддинг */
+    margin-bottom: 20px; /* Больше отступа между отзывами */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4); /* Более глубокая тень */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-item:hover {
+    transform: translateY(-5px); /* Более заметный эффект при наведении */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.review-item h5 {
+    font-weight: 600;
+    color: #ffffff; /* Белый цвет имени автора */
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    text-shadow: 0 0 5px rgba(255,255,255,0.1);
+}
+
+.review-item .text-muted.small {
+    font-size: 0.85em;
+    color: #B0B0C0 !important; /* Мягкий серый для даты */
+    margin-bottom: 15px; /* Отступ от текста комментария */
+    display: block;
+}
+
+.review-item p {
+    margin-top: 10px;
+    line-height: 1.7; /* Увеличим межстрочный интервал */
+    color: #E0E0E0; /* Светлый цвет текста комментария */
+}
+
+/* Стили для звезд рейтинга (если решите вернуть) */
+.s-product-review span {
+    color: #5A5A7A; /* Приглушенный темный для неактивной звезды */
+    font-size: 1.2em;
+    margin-left: 3px;
+}
+
+.s-product-review .start-color {
+    color: #FFD700; /* Ярко-золотой цвет активной звезды */
+    text-shadow: 0 0 5px rgba(255,215,0,0.4); /* Легкое свечение для активных звезд */
+}
+
+/* --- Стили для формы добавления отзыва --- */
+.add-review-form {
+    background-color: #2A2A4A; /* Темный фон для формы, такой же как отзывы */
+    border: 1px solid #3A3A5A; /* Граница формы */
+    border-radius: 12px;
+    padding: 35px; /* Увеличим паддинг */
+    margin-top: 50px; /* Больше отступа от списка отзывов */
+    max-width: 650px; /* Немного шире */
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.add-review-form h3 {
+    color: #ffffff; /* Белый заголовок формы */
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 700; /* Более жирный заголовок */
+    text-align: center;
+    text-shadow: 0 0 10px rgba(233, 80, 184, 0.3); /* Легкое свечение */
+}
+
+.add-review-form .form-label {
+    font-weight: 500;
+    color: #E0E0E0; /* Светлый цвет для подписей полей */
+    margin-bottom: 10px; /* Отступ от поля */
+    display: block;
+    font-size: 1.05em;
+}
+
+.add-review-form textarea {
+    background-color: #1A1A2E; /* Более темный фон для текстового поля */
+    color: #E0E0E0; /* Светлый текст в поле */
+    border: 1px solid #3A3A5A; /* Темная граница */
+    padding: 15px 20px; /* Увеличим паддинг */
+    border-radius: 8px; /* Чуть более скругленные углы */
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.add-review-form textarea::placeholder {
+    color: #9A9AAB; /* Приглушенный серый для плейсхолдера */
+}
+
+.add-review-form select { /* Стили для select (если вернете рейтинг) */
+    background-color: #1A1A2E;
+    color: #E0E0E0;
+    border: 1px solid #3A3A5A;
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    appearance: none;
+    /* Это SVG для стрелки выпадающего списка, чтобы она тоже была светлой */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23E0E0E0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px 12px;
+}
+
+
+/* Счетчик символов */
+.char-count {
+    font-size: 0.9em;
+    color: #B0B0C0; /* Мягкий серый для счетчика */
+    text-align: right;
+    margin-top: 8px;
+}
+
+.char-count.error {
+    color: #FF6B6B; /* Красный цвет */
+    font-weight: bold;
+}
+
+/* Кнопка отправки отзыва (стили могут быть унаследованы от add-to-cart-btn) */
+.add-review-form button[type="submit"] {
+    background: linear-gradient(to right, #E950B8, #6A5ACD); /* Градиентный фон */
+    color: #ffffff;
+    border: none;
+    padding: 15px 40px; /* Больше паддинг */
+    border-radius: 8px; /* Скругленные углы */
+    font-size: 1.2em; /* Крупнее шрифт */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+    display: inline-block;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Мягкая тень */
+}
+
+.add-review-form button[type="submit"]:hover {
+    transform: translateY(-3px); /* Легкий подъем при наведении */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    opacity: 0.9; /* Небольшое изменение прозрачности */
+}
+
+/* Стили для сообщения "Пока нет отзывов" */
+.single_product_description p.text-center {
+    color: #B0B0C0;
+    margin-top: 30px;
+    font-size: 1.15em;
+}
+
+/* Стили для сообщения "Для того чтобы оставить отзыв..." */
+.single_product_description p.text-center.mt-5 {
+    color: #E0E0E0;
+    font-size: 1.1em;
+}
+
+.single_product_description p.text-center.mt-5 a {
+    color: #E950B8; /* Акцентный пурпурный для ссылок */
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.single_product_description p.text-center.mt-5 a:hover {
+    color: #6A5ACD; /* Изменение цвета при наведении на ссылку */
+    text-decoration: underline;
+}
+
+/* Добавьте в static/css/style.css */
+
+.btn-danger {
+    background-color: #d9534f; /* Стандартный красный Bootstrap */
+    color: #fff;
+    border: 1px solid #d43f3a;
+    border-radius: 6px; /* Немного скругленные углы */
+    padding: 8px 15px; /* Небольшой паддинг */
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+    border-color: #ac2925;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Если хотите, чтобы она была более в стиле AnimeKicks */
+.btn.btn-danger { /* Используйте более специфичный селектор */
+    background: linear-gradient(to right, #FF6B6B, #E950B8); /* Красный с пурпурным градиентом */
+    border: none;
+    color: #ffffff;
+    padding: 8px 18px; /* Увеличьте паддинг */
+    border-radius: 8px; /* Более скругленные углы */
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.btn.btn-danger:hover {
+    transform: translateY(-2px); /* Легкий подъем при наведении */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    opacity: 0.9;
+}

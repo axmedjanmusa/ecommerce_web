@@ -1,0 +1,20 @@
+/* Общие стили для кнопок и инпутов */
+button, a {
+    cursor: pointer;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.viewcontent__action i {
+    font-size: 1.5rem;
+    color: #bd93f9;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.viewcontent__action i:hover {
+    color: #ff79c6;
+}

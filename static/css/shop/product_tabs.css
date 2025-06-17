@@ -1,0 +1,44 @@
+/* Стили для табов и описания продукта */
+.nav-tabs {
+    border-bottom: 2px solid #444;
+}
+
+.nav-tabs .nav-link {
+    color: #bd93f9;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    transition: color 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    color: #ff79c6;
+    border-bottom: 3px solid #ff79c6;
+}
+
+.nav-tabs .nav-link img {
+    width: 80px;
+    border-radius: 5px;
+    opacity: 0.7;
+}
+
+.nav-tabs .nav-link.active img {
+    opacity: 1;
+}
+
+.single_product_description {
+    padding-top: 50px;
+    text-align: center;
+}
+
+.single_product_description h2 {
+    font-size: 2rem;
+    color: #ff79c6;
+    margin-bottom: 20px;
+}
+
+.single_product_description p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #d8dee9;
+}

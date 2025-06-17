@@ -1,0 +1,641 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Favorite - Официальный магазин аниме-кроссовок{% endblock %}
+{% block extra_css %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Главная секция */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 5%;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b9d, #a855f7, #06b6d4);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #a855f7, #ec4899);
+            color: white;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #06b6d4;
+            border: 2px solid #06b6d4;
+        }
+
+        .btn-secondary:hover {
+            background: #06b6d4;
+            color: #1a1a2e;
+            transform: translateY(-3px);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .floating-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 300px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Секция товаров */
+        .products-section {
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #06b6d4, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            /* Adjusted minmax to allow for smaller cards */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem; /* Slightly reduced gap */
+            margin-bottom: 3rem;
+            justify-content: center; /* Center the grid items */
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1rem; /* Reduced padding */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            max-width: 300px; /* Explicit max-width for smaller cards */
+            margin: 0 auto; /* Center individual cards in their grid cell */
+            text-align: left; /* Align text within the card */
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 160px; /* Reduced height for smaller image area */
+            background: linear-gradient(45deg, #374151, #4b5563);
+            border-radius: 15px;
+            margin-bottom: 0.8rem; /* Reduced margin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem; /* Slightly smaller emoji/placeholder */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .product-card:hover .product-image::before {
+            left: 100%;
+        }
+
+        .product-title {
+            font-size: 1.1rem; /* Slightly smaller font size */
+            margin-bottom: 0.4rem; /* Reduced margin */
+            color: #ffffff;
+        }
+
+        .product-description {
+            color: #94a3b8;
+            margin-bottom: 0.8rem; /* Reduced margin */
+            font-size: 0.85rem; /* Slightly smaller font size */
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.3rem; /* Slightly smaller font size */
+            font-weight: bold;
+            color: #06b6d4;
+            margin-bottom: 0.8rem; /* Reduced margin */
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.4rem; /* Reduced gap */
+            justify-content: center;
+            margin-top: 1rem; /* Add margin for separation */
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem; /* Reduced padding for smaller buttons */
+            font-size: 0.85rem; /* Slightly smaller font size for buttons */
+            border-radius: 25px;
+        }
+
+        .favorite-btn {
+            background: rgba(236, 72, 153, 0.2);
+            border: 1px solid #ec4899;
+            color: #ec4899;
+            width: 36px; /* Slightly smaller favorite button */
+            height: 36px; /* Slightly smaller favorite button */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem; /* Adjust heart icon size */
+        }
+
+        .favorite-btn:hover {
+            background: #ec4899;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            background: #ec4899;
+            color: white;
+        }
+
+        /* Styles for the "Удалить из избранного" button */
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626); /* Red gradient */
+            color: white;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+
+        /* Поиск */
+        .search-section {
+            padding: 2rem 5%;
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Анимации */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Отзывчивость */
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .hero-content {
+                margin-bottom: 2rem;
+            }
+
+            .products-grid {
+                /* On small screens, keep it to one column but allow it to be smaller */
+                grid-template-columns: minmax(250px, 1fr);
+                justify-content: center; /* Center the single card */
+            }
+
+            .product-card {
+                max-width: 300px; /* Ensure cards don't stretch too wide on small screens */
+            }
+
+            .cta-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* Эффекты частиц */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(168, 85, 247, 0.5);
+            border-radius: 50%;
+            animation: particleFloat 8s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="products-section"> {# Use products-section for padding and alignment #}
+        <h2 class="section-title">Избранное</h2> {# Using section-title for consistent heading style #}
+
+        {% if favorites %}
+            <div class="products-grid"> {# Use products-grid for the layout #}
+                {% for favorite in favorites %}
+                    <div class="product-card fade-in"> {# Apply product-card and fade-in for card styling #}
+                        {% if favorite.product.product_images.first %}
+                            <div class="product-image" style="background: none;"> {# Remove background gradient if image exists #}
+                                <img src="{{ favorite.product.product_images.first.image.url }}"
+                                     alt="{{ favorite.product.name }}"
+                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;"> {# Adjust image styles #}
+                            </div>
+                        {% else %}
+                            <div class="product-image">
+                                <span>🖼️</span>
+                            </div>
+                        {% endif %}
+                        <h3 class="product-title">{{ favorite.product.name }}</h3>
+                        <p class="product-price">Цена: {{ favorite.product.price }} ₽</p>
+                        <div class="product-actions">
+                            <a href="{% url 'shop:product_detail' favorite.product.id %}"
+                               class="btn btn-primary btn-small">Подробнее</a> {# Use existing btn styles #}
+                            <form action="{% url 'favorite:remove_from_favorites' favorite.product.id %}"
+                                  method="post"
+                                  style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-small">Удалить из избранного</button> {# Custom class or adjust btn-danger #}
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="product-card" style="background: rgba(255, 255, 255, 0.05); padding: 2rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; max-width: 600px; margin: 0 auto;">
+                <p style="color: #94a3b8; font-size: 1.1rem; margin-bottom: 1rem;">
+                    У вас пока нет товаров в избранном.
+                </p>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-small">Перейти в каталог</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // Данные товаров
+        const products = [
+            {
+                id: 1,
+                name: "Naruto Sage Mode",
+                description: "Модные Спортивные Кроссовки Naruto Uzumaki Наруто Уичхха Саске-дизайн",
+                price: "₽203.59",
+                emoji: "🧡",
+                colors: ["orange", "black", "white"]
+            },
+            {
+                id: 2,
+                name: "Attack on Titan Wings",
+                description: "Эксклюзивные кроссовки с символикой Разведкорпуса",
+                price: "₽256.90",
+                emoji: "⚔️",
+                colors: ["green", "brown", "white"]
+            },
+            {
+                id: 3,
+                name: "Dragon Ball Z Energy",
+                description: "Кроссовки с энергией Сайянов для истинных воинов",
+                price: "₽289.99",
+                emoji: "🐉",
+                colors: ["orange", "blue", "yellow"]
+            },
+            {
+                id: 4,
+                name: "One Piece Adventure",
+                description: "Пиратские кроссовки для покорения Гранд Лайн",
+                price: "₽234.50",
+                emoji: "🏴‍☠️",
+                colors: ["red", "blue", "yellow"]
+            },
+            {
+                id: 5,
+                name: "Demon Slayer Breath",
+                description: "Стильные кроссовки с техниками дыхания",
+                price: "₽278.30",
+                emoji: "⚡",
+                colors: ["red", "black", "yellow"]
+            },
+            {
+                id: 6,
+                name: "My Hero Academia Plus Ultra",
+                description: "Геройские кроссовки для будущих про-героев",
+                price: "₽245.80",
+                emoji: "💪",
+                colors: ["green", "red", "white"]
+            }
+        ];
+
+        // Избранные товары
+        let favorites = new Set();
+
+        // Создание карточки товара
+        function createProductCard(product) {
+            return `
+                <div class="product-card fade-in" data-id="${product.id}">
+                    <div class="product-image">
+                        ${product.emoji}
+                    </div>
+                    <h3 class="product-title">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">${product.price}</div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-small add-to-cart-btn" onclick="addToCart(${product.id})">
+                            В корзину
+                        </button>
+                        <button class="favorite-btn ${favorites.has(product.id) ? 'active' : ''}" onclick="toggleFavorite(${product.id})">
+                            ♥
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Отображение товаров
+        function renderProducts(productsToRender = products) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = productsToRender.map(createProductCard).join('');
+
+            // Анимация появления
+            setTimeout(() => {
+                document.querySelectorAll('.product-card').forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            }, 100);
+        }
+
+        // Добавление в корзину
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                // Анимация кнопки
+                const btn = event.target;
+                btn.innerHTML = '✓ Добавлено';
+                btn.style.background = 'linear-gradient(45deg, #10b981, #059669)';
+
+                setTimeout(() => {
+                    btn.innerHTML = 'В корзину';
+                    btn.style.background = '';
+                }, 2000);
+
+                console.log(`Товар "${product.name}" добавлен в корзину`);
+            }
+        }
+
+        // Переключение избранного
+        function toggleFavorite(productId) {
+            const btn = event.target;
+
+            if (favorites.has(productId)) {
+                favorites.delete(productId);
+                btn.classList.remove('active');
+            } else {
+                favorites.add(productId);
+                btn.classList.add('active');
+
+                // Анимация
+                btn.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                }, 200);
+            }
+        }
+
+        // Поиск
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+
+                if (query.trim() === '') {
+                    renderProducts();
+                    return;
+                }
+
+                const filteredProducts = products.filter(product =>
+                    product.name.toLowerCase().includes(query) ||
+                    product.description.toLowerCase().includes(query)
+                );
+
+                renderProducts(filteredProducts);
+            });
+        }
+
+        // Создание частиц
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Плавная прокрутка
+        function setupSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Анимация при скролле
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            setupSearch();
+            createParticles();
+            setupSmoothScroll();
+            setupScrollAnimations();
+        });
+    </script>
+{% endblock %}

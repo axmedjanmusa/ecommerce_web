@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ product.name }} - Официальный магазин AnimeKicks
+{% endblock %}
+
+{% block messages %}
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} p-4 mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shop/product.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shop/product_tabs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shop/product_social.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shop/product_reviews.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shop/product_general.css' %}">
+    <style>
+        /* Стили для кнопки "Добавить в корзину" */
+        .add-to-cart-btn {
+            background-color: #4CAF50; /* Зеленый фон */
+            color: white; /* Белый текст */
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Плавный переход при наведении */
+        }
+        .add-to-cart-btn:hover {
+            background-color: #45a049; /* Темнее зеленый при наведении */
+        }
+
+        /* Дополнительные стили для улучшения внешнего вида формы количества */
+        .quantity-input-wrapper {
+            display: inline-block; /* Позволяет обернуть инпут и сделать его частью flex-контейнера */
+            margin-right: 10px; /* Отступ от кнопки */
+        }
+
+        .quantity-input-wrapper input[type="number"] {
+            width: 60px; /* Ширина поля ввода количества */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            -moz-appearance: textfield; /* Убирает стрелки в Firefox */
+        }
+
+        .quantity-input-wrapper input[type="number"]::-webkit-outer-spin-button,
+        .quantity-input-wrapper input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Убирает стрелки в Chrome/Safari */
+            margin: 0;
+        }
+
+        /* Стили для секций информации о товаре */
+        .single_preview_content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .single_preview_content ul li {
+            padding: 5px 0;
+        }
+
+        .single_preview_content .viewcontent__footer ul:first-child li {
+            font-weight: 600; /* Жирный текст для заголовков */
+            color: #333;
+        }
+
+        .single_preview_content .viewcontent__footer ul:last-child li {
+            color: #555;
+        }
+
+        /* Стили для отзывов и дополнительной информации */
+        .single_product_description ul {
+            list-style: disc; /* Маркеры для списка характеристик */
+            padding-left: 20px;
+            text-align: left; /* Выравнивание текста списка влево */
+            margin: 0 auto;
+            max-width: 600px; /* Ограничение ширины списка для лучшей читаемости */
+        }
+
+        .single_product_description ul li {
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* Стили для табов изображений */
+        .single_product_tab .nav-tabs {
+            border-bottom: none; /* Убрать стандартную границу табов */
+        }
+
+        .single_product_tab .nav-item {
+            margin: 0 5px;
+        }
+
+        .single_product_tab .nav-link {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+        }
+
+        .single_product_tab .nav-link.active,
+        .single_product_tab .nav-link:hover {
+            opacity: 1;
+            border-color: #7c4dff; /* Активный цвет границы */
+        }
+
+        .single_product_tab .nav-link img {
+            width: 80px; /* Размер миниатюр */
+            height: 80px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        /* Стили для основного изображения товара */
+        .single_preview_product .full-view img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 991px) {
+            .single_preview_content {
+                padding-left: 0;
+                margin-top: 30px; /* Отступ сверху на мобильных */
+            }
+            .single_product_tab {
+                margin-top: 30px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="single_breadcrumb pt-25">
+        <div class="container">
+            <div class="row">
+                {# Левая колонка: Изображения товара #}
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="single_preview_product">
+                        <div class="tab-content" id="myTabContent">
+                            {# Отображение основного изображения товара #}
+                            {% if images %}
+                                {% for image in images %}
+                                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                                         id="product-image-{{ image.id }}" role="tabpanel" aria-labelledby="product-image-tab-{{ image.id }}">
+                                        <div class="full-view">
+                                            <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {# Заглушка, если изображений нет #}
+                                <div class="tab-pane fade show active" id="product-image-default" role="tabpanel" aria-labelledby="product-image-tab-default">
+                                    <div class="full-view">
+                                        <img src="{% static 'images/default.jpg' %}" alt="Изображение недоступно">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {# Навигация по изображениям (миниатюры) #}
+                    <div class="single_product_tab d-sm-none d-md-block mt-30"> {# Добавлен отступ сверху #}
+                        <div class="single_prodct single-bottom">
+                            <ul class="nav nav-tabs justify-content-center mb-55" id="myffTab" role="tablist">
+                                {% if images %}
+                                    {% for image in images %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link {% if forloop.first %}active{% endif %}"
+                                                    id="product-image-tab-{{ image.id }}" data-bs-toggle="tab"
+                                                    data-bs-target="#product-image-{{ image.id }}" type="button" role="tab"
+                                                    aria-controls="product-image-{{ image.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                                                <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                                            </button>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {# Правая колонка: Информация о товаре #}
+                <div class="col-xl-6 col-lg-6 col-md-12">
+                    <div class="single_preview_content pl-30">
+                        <h2 class="title-5 edit-title border-bottom-0">{{ product.name }}</h2>
+                        <div class="s-product-review">
+                            {# Здесь можно использовать реальные данные о рейтинге, если они есть #}
+                            <span><i class="far fa-star start-color"></i></span>
+                            <span><i class="far fa-star start-color"></i></span>
+                            <span><i class="far fa-star start-color"></i></span>
+                            <span><i class="far fa-star start-color"></i></span>
+                            <span><i class="far fa-star"></i></span>
+                            <span class="pl-left">(1 отзыв)</span> {# Заглушка, если нет реальных отзывов #}
+                        </div>
+                        <div class="s-price pt-30 mb-30">
+                            <span>₽{{ product.price }}</span>
+                        </div>
+                        <div class="s-des">
+                            <p>{{ product.description }}</p>
+                        </div>
+
+                        {# Форма добавления в корзину #}
+                        <div class="viewcontent__action single_action pt-30">
+                            <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="flex items-center">
+                                {% csrf_token %}
+                                {# Скрытое поле product_id, если оно есть в форме AddToCartForm #}
+                                {% if add_to_cart_form.product_id %}
+                                    {{ add_to_cart_form.product_id }}
+                                {% endif %}
+                                {# Поле для ввода количества #}
+                                <span class="quantity-input-wrapper">
+                                    {{ add_to_cart_form.quantity }}
+                                </span>
+                                <span>
+                                    <button type="submit" class="add-to-cart-btn">+ добавить в корзину</button>
+                                </span>
+                            </form>
+                        </div>
+
+                        {# Дополнительная информация о товаре #}
+                        <div class="viewcontent__footer border-top-0 border-bottom pb-30">
+                            <ul class="info-labels">
+                                <li>Категория:</li>
+                                <li>Артикул:</li>
+                                <li>Наличие:</li>
+                            </ul>
+                            <ul class="info-values">
+                                <li>{% if category %}{{ category.name }}{% else %}Не указано{% endif %}</li>
+                                <li>{{ product.slug }}</li>
+                                <li>
+                                    {% if product.stock > 0 %}
+                                        В наличии ({{ product.stock }} шт.)
+                                    {% else %}
+                                        Нет в наличии
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+
+                        {# Социальные сети #}
+                        <div class="social__media f-social-media mb-30 pt-15">
+                            <h3 class="f-title edit-f-title">СЛЕДИТЕ ЗА НАМИ</h3>
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-google-plus-g"></i></a>
+                            <a href="#"><i class="fab fa-dribbble"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Секция с вкладками: Описание, Дополнительная информация, Отзывы #}
+    <div class="single_product_long_desc pt-20 mb-60"> {# Добавлен класс mb-80 для отступа перед футером #}
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="categories__tab single_disc_tab">
+                        <ul class="nav nav-tabs justify-content-center" id="myerTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
+                                        data-bs-target="#Description" type="button" role="tab"
+                                        aria-controls="Description" aria-selected="true">Описание</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="additional-tab" data-bs-toggle="tab"
+                                        data-bs-target="#Additional"
+                                        type="button" role="tab"
+                                        aria-controls="Additional" aria-selected="false">Дополнительная информация</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#Reviews"
+                                        type="button" role="tab"
+                                        aria-controls="Reviews" aria-selected="false">Отзывы (1)</button> {# Заглушка #}
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabCffontent">
+                            {# Вкладка "Описание" #}
+                            <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="description-tab">
+                                <div class="single_product_description text-center pt-10"> {# Отступ уменьшен ранее #}
+                                    <h2 class="title-5 border-0">{{ product.name }}</h2>
+                                    <p>{{ product.description }}</p>
+                                </div>
+                            </div>
+                            {# Вкладка "Дополнительная информация" #}
+                            <div class="tab-pane fade" id="Additional" role="tabpanel" aria-labelledby="additional-tab">
+                                <div class="single_product_description text-center pt-10"> {# Отступ уменьшен ранее #}
+                                    <h2 class="title-5 border-0">Дополнительная информация</h2>
+                                    {% if characteristics %}
+                                        <ul>
+                                            {% for char in characteristics %}
+                                                <li><strong>{{ char.title }}:</strong> {{ char.value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p>Дополнительная информация отсутствует.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {# Вкладка "Отзывы" #}
+                            <div class="tab-pane fade" id="Reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                <div class="single_product_description pt-10">
+                                    <h2 class="title-5 border-0 text-center">Отзывы</h2>
+
+                                    {% if reviews %}
+                                        <div class="reviews-list mt-4">
+                                            {% for review in reviews %}
+                                <div class="review-item mb-4 p-3 border rounded">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">{{ review.author.username }}</h5>
+                                        {# ... (звезды рейтинга, если есть) ... #}
+                                    </div>
+                                    <p class="text-muted small">{{ review.created_at|date:"d.m.Y H:i" }}</p>
+                                    <p>{{ review.comment }}</p>
+
+                                    {# ДОБАВИТЬ ЭТОТ БЛОК ДЛЯ УДАЛЕНИЯ #}
+                                {% if user.is_authenticated %}
+                                        {% if user == review.author or user.is_superuser %}
+                                            <form action="{% url 'shop:delete_comment' review.id %}" method="post" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger mt-2"
+                                                        onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?');">
+                                                    Удалить
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-center">Пока нет отзывов для этого товара.</p>
+                                    {% endif %}
+
+                                    {% if user.is_authenticated %}
+                                        <div class="add-review-form mt-5 p-4 border rounded"> {# bg-light УДАЛЕН отсюда #}
+                                            <h3 class="title-5 border-0 text-center mb-4">Оставить отзыв</h3>
+                                            <form method="post" action="{% url 'shop:product_detail' product.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="add_comment" value="true">
+
+                                                <div class="mb-3">
+                                                    <label for="{{ review_form.comment.id_for_label }}" class="form-label">Ваш комментарий:</label>
+                                                    {{ review_form.comment }} {# Django автоматически добавит id="id_comment" #}
+                                                    <div id="comment-char-count" class="char-count"></div> {# Элемент для счетчика #}
+                                                </div>
+                                                <div class="text-center">
+                                                    <button type="submit" class="add-to-cart-btn">Отправить отзыв</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-center mt-5">Для того чтобы оставить отзыв, пожалуйста <a href="{% url 'user:login_url' %}">войдите</a> или <a href="{% url 'user:registration_url' %}">зарегистрируйтесь</a>.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'js/shop/product-tabs.js' %}"></script>
+    <script src="{% static 'js/shop/product-cart.js' %}"></script>
+    <script src="{% static 'js/shop/product-social.js' %}"></script>
+    <script src="{% static 'js/shop/product-desc.js' %}"></script>
+    <script src="{% static 'js/shop/product-quantity-valid.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,29 @@
+/* Стили для отзывов и кнопок */
+.s-product-review {
+    margin-top: 10px;
+}
+
+.s-product-review i {
+    color: #ffb86c;
+}
+
+.viewcontent__footer {
+    margin-top: 20px;
+}
+
+.viewcontent__footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.viewcontent__footer li {
+    font-size: 1rem;
+    color: #d8dee9;
+}
+
+.viewcontent__footer li:first-child {
+    color: #bd93f9;
+}

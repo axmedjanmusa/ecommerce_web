@@ -1,0 +1,910 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AnimeKicks - Официальный магазин аниме-кроссовок{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+    /* Существующие стили остаются без изменений */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .shop-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        gap: 20px;
+    }
+
+    /* Стили боковой панели */
+    .shop-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+    }
+
+    .filter-section {
+        background-color: white;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .filter-section h3 {
+        font-size: 14px;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .filter-list {
+        list-style: none;
+    }
+
+    .filter-item {
+        padding: 8px 0;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .filter-item:hover {
+        color: #7c4dff;
+    }
+
+    .filter-item.active {
+        color: #7c4dff;
+        font-weight: 500;
+    }
+
+    .price-slider-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .price-slider {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .price-range-values {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .filter-button {
+        background-color: #7c4dff;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    .filter-button:hover {
+        background-color: #6a3de8;
+    }
+
+    .color-options {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .color-circle {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid #eee;
+    }
+
+    .color-circle:hover, .color-circle.active {
+        border-color: #7c4dff;
+    }
+
+    .size-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .size-option {
+        padding: 5px 10px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .size-option:hover, .size-option.active {
+        background-color: #7c4dff;
+        color: white;
+        border-color: #7c4dff;
+    }
+
+    .top-rated-items {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .rated-item {
+        display: flex;
+        gap: 10px;
+    }
+
+    .rated-item-img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .rated-item-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .rated-item-info h4 {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .item-price {
+        font-size: 14px;
+        font-weight: 600;
+        color: #7c4dff;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 12px;
+        font-weight: normal;
+        margin-left: 5px;
+    }
+
+    .tag-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .tag {
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        color: #555;
+        text-decoration: none;
+    }
+
+    .tag:hover {
+        background-color: #7c4dff;
+        color: white;
+    }
+
+    /* Стили области продуктов */
+    .products-area {
+        flex-grow: 1;
+    }
+
+    .products-control {
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .showing-info {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .showing-info span {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .products-sort {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .sort-select select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 14px;
+        color: #555;
+        outline: none;
+    }
+
+    .view-options {
+        display: flex;
+        gap: 5px;
+    }
+
+    .view-option {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        cursor: pointer;
+        color: #555;
+    }
+
+    .view-option.active {
+        background-color: #7c4dff;
+        color: white;
+        border-color: #7c4dff;
+    }
+
+    /* Стили сетки продуктов */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .product-card {
+        background-color: white;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-image {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1/1;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover .product-overlay {
+        opacity: 1;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #333;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background-color: #7c4dff;
+        color: white;
+    }
+
+    .product-badges {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .badge.new {
+        background-color: #00c853;
+    }
+
+    .badge.sale {
+        background-color: #ff3d00;
+    }
+
+    .badge.hot {
+        background-color: #ff6d00;
+    }
+
+    .badge.out {
+        background-color: #757575;
+    }
+
+    .product-info {
+        padding: 15px;
+    }
+
+    .product-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .product-price {
+        font-size: 16px;
+        font-weight: 600;
+        color: #7c4dff;
+        margin-bottom: 5px;
+    }
+
+    .product-stock {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .in-stock {
+        color: #00c853;
+    }
+
+    .low-stock {
+        color: #ff9100;
+    }
+
+    .out-of-stock {
+        color: #f44336;
+    }
+
+    .product-characteristics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 8px;
+    }
+
+    .characteristic {
+        background-color: #f0f0f0;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 11px;
+        color: #555;
+    }
+
+    /* Стили пагинации */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        gap: 5px;
+    }
+
+    .page-link {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .page-link.active {
+        background-color: #7c4dff;
+        color: white;
+        border-color: #7c4dff;
+    }
+
+    .page-link:hover:not(.active) {
+        background-color: #f5f5f5;
+    }
+
+    /* Адаптивный дизайн для мобильных устройств */
+    @media (max-width: 992px) {
+        .shop-container {
+            flex-direction: column;
+        }
+
+        .shop-sidebar {
+            width: 100%;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .products-control {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+    }
+
+    /* Стили для вида списка */
+    .products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .products-list .product-card {
+        display: flex;
+        height: auto;
+    }
+
+    .products-list .product-image {
+        width: 200px;
+        aspect-ratio: 1 / 1;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .products-list .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .products-list .product-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .products-list .product-title {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        .products-list .product-card {
+            flex-direction: column;
+            height: auto;
+        }
+
+        .products-list .product-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+        .products-list .product-image img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    /* Стили для выпадающего списка выбора размера */
+    #sizeFilter {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #555;
+        background-color: white;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%23555" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        cursor: pointer;
+    }
+
+    #sizeFilter:focus {
+        outline: none;
+        border-color: #7c4dff;
+        box-shadow: 0 0 5px rgba(124, 77, 255, 0.2);
+    }
+
+    .size-options {
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<main class="shop-container">
+    <aside class="shop-sidebar">
+        <section class="filter-section">
+            <h3>КАТЕГОРИИ ПРОДУКТОВ</h3>
+            <ul class="filter-list">
+                <li class="filter-item {% if not selected_category %}active{% endif %}">
+                    <a href="{% url 'shop:product_list' %}">Все продукты</a>
+                </li>
+                {% for category in categories %}
+                <li class="filter-item {% if selected_category == category.slug %}active{% endif %}"
+                    data-category="{{ category.slug }}">
+                    <a href="?category={{ category.slug }}">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <div class="filter-section">
+            <h3>ФИЛЬТР ПО ЦЕНЕ</h3>
+            <div class="price-slider-container">
+                <div class="price-range-values">
+                    <span class="min-price">₽{{ min_price|default:0 }}</span>
+                    <span class="max-price">₽{{ max_price|default:50000 }}</span>
+                </div>
+                <input type="range" min="0" max="50000" value="{{ min_price|default:0 }}" class="price-slider" id="minPrice">
+                <input type="range" min="0" max="50000" value="{{ max_price|default:50000 }}" class="price-slider" id="maxPrice">
+                <button class="filter-button" id="priceFilterBtn">ФИЛЬТРОВАТЬ</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>ВАРИАНТЫ ЦВЕТОВ</h3>
+            <div class="color-options">
+                <a href="?color=Желтый" class="color-circle {% if selected_color == 'Желтый' %}active{% endif %}"
+                   style="background-color: #ffff00;" data-color="Желтый"></a>
+                <a href="?color=Оранжевый" class="color-circle {% if selected_color == 'Оранжевый' %}active{% endif %}"
+                   style="background-color: #ff8800;" data-color="Оранжевый"></a>
+                <a href="?color=Черный" class="color-circle {% if selected_color == 'Черный' %}active{% endif %}"
+                   style="background-color: #000000;" data-color="Черный"></a>
+                <a href="?color=Белый" class="color-circle {% if selected_color == 'Белый' %}active{% endif %}"
+                   style="background-color: #ffffff;" data-color="Белый"></a>
+                <a href="?color=Красный" class="color-circle {% if selected_color == 'Красный' %}active{% endif %}"
+                   style="background-color: #ff0000;" data-color="Красный"></a>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>РАЗМЕРЫ</h3>
+            <div class="size-options">
+                <select id="sizeFilter" name="size">
+                    <option value="">Все размеры</option>
+                    {% for size in available_sizes %}
+                        <option value="{{ size }}" {% if selected_size == size %}selected{% endif %}>
+                            {{ size }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </aside>
+
+    <div class="products-area">
+        <div class="products-control">
+            <div class="showing-info">
+                Показано <span>{{ products.start_index }}–{{ products.end_index }}</span> из <span>{{ products.paginator.count }}</span> товаров
+            </div>
+            <div class="products-sort">
+                <div class="sort-select">
+                    <select onchange="updateSort(this.value)">
+                        <option value="default" {% if not sort_by %}selected{% endif %}>Сортировать</option>
+                        <option value="popularity" {% if sort_by == 'popularity' %}selected{% endif %}>По популярности</option>
+                        <option value="price-asc" {% if sort_by == 'price-asc' %}selected{% endif %}>По цене: от низкой к высокой</option>
+                        <option value="price-desc" {% if sort_by == 'price-desc' %}selected{% endif %}>По цене: от высокой к низкой</option>
+                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>По новизне</option>
+                    </select>
+                </div>
+                <div class="view-options">
+                    <div class="view-option active" data-view="grid"><i class="fas fa-th-large"></i></div>
+                    <div class="view-option" data-view="list"><i class="fas fa-list"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card" data-product-id="{{ product.id }}" onclick="window.location.href='{% url 'shop:product_detail' product.id %}'">
+                <div class="product-image">
+                    {% if product.product_images.first %}
+                        <img src="{{ product.product_images.first.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.png' %}" alt="Без изображения">
+                    {% endif %}
+                    <div class="product-overlay">
+                        <div class="product-actions">
+                            <form action="{% url 'favorite:toggle_favorite' product.id %}" method="post" class="toggle-favorite-form" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="action-btn favorite-btn"><i class="fas fa-heart"></i></button>
+                            </form>
+                            <button class="action-btn eye-btn" onclick="window.location.href='{% url 'shop:product_detail' product.id %}'; event.stopPropagation();"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-badges">
+                        {% if product.is_new %}
+                            <span class="badge new">Новинка</span>
+                        {% endif %}
+                        {% if product.on_sale %}
+                            <span class="badge sale">Распродажа</span>
+                        {% endif %}
+                        {% if product.is_hot %}
+                            <span class="badge hot">Хит</span>
+                        {% endif %}
+                        {% if not product.available %}
+                            <span class="badge out">Нет в наличии</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-price">₽{{ product.price|floatformat:2 }}</div>
+                    <div class="product-stock {% if product.stock > 10 %}in-stock{% elif product.stock > 0 %}low-stock{% else %}out-of-stock{% endif %}">
+                        {% if product.stock > 0 %}
+                            В наличии ({{ product.stock }} шт.)
+                        {% else %}
+                            Нет в наличии
+                        {% endif %}
+                    </div>
+                    <div class="product-characteristics">
+                        {% for char in product.product_characteristics.all %}
+                            <span class="characteristic">{{ char.title }}: {{ char.value }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>Продукты не найдены.</p>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/shop/shop-main.js' %}"></script>
+<script src="{% static 'js/shop/shop-filters.js' %}"></script>
+<script src="{% static 'js/shop/shop-products.js' %}"></script>
+<script src="{% static 'js/shop/shop-modal.js' %}"></script>
+<script src="{% static 'js/shop/shop-animations.js' %}"></script>
+<script src="{% static 'js/home.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Слайдеры ценового диапазона
+        const minPriceSlider = document.getElementById('minPrice');
+        const maxPriceSlider = document.getElementById('maxPrice');
+        const minPriceDisplay = document.querySelector('.min-price');
+        const maxPriceDisplay = document.querySelector('.max-price');
+
+        // Обновление отображения при изменении слайдеров
+        minPriceSlider.addEventListener('input', function() {
+            let minValue = parseInt(this.value);
+            let maxValue = parseInt(maxPriceSlider.value);
+            if (minValue > maxValue - 100) {
+                minValue = maxValue - 100;
+                this.value = minValue;
+            }
+            minPriceDisplay.textContent = `₽${minValue}`;
+        });
+
+        maxPriceSlider.addEventListener('input', function() {
+            let maxValue = parseInt(this.value);
+            let minValue = parseInt(minPriceSlider.value);
+            if (maxValue < minValue + 100) {
+                maxValue = minValue + 100;
+                this.value = maxValue;
+            }
+            maxPriceDisplay.textContent = `₽${maxValue}`;
+        });
+
+        // Кнопка фильтра цены
+        const priceFilterBtn = document.getElementById('priceFilterBtn');
+        priceFilterBtn.addEventListener('click', function() {
+            const minPrice = minPriceSlider.value;
+            const maxPrice = maxPriceSlider.value;
+
+            // Получить текущие параметры URL
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Установить параметры цены
+            urlParams.set('min_price', minPrice);
+            urlParams.set('max_price', maxPrice);
+
+            // Перенаправить на новый URL с фильтром цены
+            window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+        });
+
+        // Переключатель вида
+        const viewOptions = document.querySelectorAll('.view-option');
+        const productsGrid = document.querySelector('.products-grid');
+
+        viewOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const view = this.getAttribute('data-view');
+
+                // Удалить активный класс со всех опций
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                // Добавить активный класс к выбранной опции
+                this.classList.add('active');
+
+                // Изменить вид
+                if (view === 'grid') {
+                    productsGrid.classList.remove('products-list');
+                    productsGrid.classList.add('products-grid');
+                } else {
+                    productsGrid.classList.remove('products-grid');
+                    productsGrid.classList.add('products-list');
+                }
+            });
+        });
+
+        // Функция сортировки
+        window.updateSort = function(sortValue) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('sort', sortValue);
+            window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+        };
+
+        // Фильтр цветов
+        const colorCircles = document.querySelectorAll('.color-circle');
+        colorCircles.forEach(circle => {
+            circle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const color = this.getAttribute('data-color');
+
+                // Получить текущие параметры URL
+                const urlParams = new URLSearchParams(window.location.search);
+
+                // Переключить цветовой фильтр
+                if (urlParams.get('color') === color) {
+                    urlParams.delete('color');
+                } else {
+                    urlParams.set('color', color);
+                }
+
+                // Перенаправить на новый URL с цветовым фильтром
+                window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+            });
+        });
+
+        // Фильтр размера (используя элемент select)
+        const sizeFilter = document.getElementById('sizeFilter');
+        if (sizeFilter) {
+            sizeFilter.addEventListener('change', function() {
+                const selectedSize = this.value;
+                const urlParams = new URLSearchParams(window.location.search);
+
+                if (selectedSize) {
+                    urlParams.set('size', selectedSize);
+                } else {
+                    urlParams.delete('size');
+                }
+
+                window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+            });
+        }
+
+        // Добавление в корзину и перенаправление
+        const cartForms = document.querySelectorAll('.add-to-cart-form');
+        cartForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Предотвратить срабатывание клика по карточке
+
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Показать сообщение об успехе (необязательно)
+                        alert(data.message);
+                        // Перенаправить на страницу корзины
+                        window.location.href = data.redirect || "{% url 'cart:cart_detail' %}";
+                    } else {
+                        // Показать ошибки
+                        alert('Ошибка: ' + Object.values(data.errors).join(', '));
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при добавлении в корзину:', error);
+                    alert('Ошибка при добавлении в корзину.');
+                });
+            });
+        });
+
+        // Переключение избранного и перенаправление
+        const favoriteForms = document.querySelectorAll('.toggle-favorite-form');
+        favoriteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Предотвратить срабатывание клика по карточке
+
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Перенаправить на страницу избранного после переключения
+                    window.location.href = "{% url 'favorite:favorite_list' %}";
+                })
+                .catch(error => {
+                    console.error('Ошибка при переключении избранного:', error);
+                    alert('Ошибка при добавлении в избранное.');
+                });
+            });
+        });
+
+        // Предотвратить клик по карточке продукта при взаимодействии с кнопками
+        const actionButtons = document.querySelectorAll('.action-btn');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
+{% endblock %}

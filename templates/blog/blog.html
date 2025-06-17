@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Блог - AnimeKicks
+{% endblock %}
+
+{% block extra_css %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {# Ваши общие стили, если они есть #}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <style>
+        /* Общие стили для контейнера */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Стили для секции блога */
+        .blog-area {
+            background-color: #0f172a; /* bg-slate-900 */
+            color: #e2e8f0; /* text-slate-200 */
+            min-height: 100vh; /* Для заполнения всей высоты */
+        }
+
+        /* Стили для основного элемента блога (grid_blog) */
+        .grid-blog-item {
+            background-color: #1a202c; /* bg-gray-900 */
+            border-radius: 0.75rem; /* rounded-xl */
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            margin-bottom: 2.5rem; /* mb-10 */
+        }
+
+        /* Стили для миниатюры поста в списке */
+        .blog-thumb {
+            width: 100%;
+            height: 300px; /* Фиксированная высота для изображений в списке */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .blog-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Обрезает изображение, чтобы оно заполняло контейнер */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .blog-thumb img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Стили для содержимого поста в списке */
+        .grid-blog-content {
+            padding: 1.5rem; /* p-6 */
+        }
+
+        .grid-blog-content h4 {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            color: #a855f7; /* text-purple-500 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .grid-blog-content .b-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #f8fafc; /* text-slate-50 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .grid-blog-content .b-title a {
+            color: inherit; /* Наследует цвет от родителя */
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .grid-blog-content .b-title a:hover {
+            color: #c084fc; /* hover:text-purple-400 */
+        }
+
+        .grid-blog-content p {
+            font-size: 0.9375rem; /* text-sm */
+            color: #cbd5e1; /* text-slate-300 */
+            line-height: 1.6;
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .post-meta-list {
+            font-size: 0.875rem; /* text-sm */
+            color: #94a3b8; /* text-slate-400 */
+            padding-top: 0.5rem; /* pt-2 */
+        }
+
+        .post-meta-list span {
+            font-weight: 600; /* font-semibold */
+            color: #cbd5e1; /* text-slate-300 */
+        }
+
+        /* Стили для сайдбара (повторяются из post_detail.html) */
+        .sidebar-wrapper {
+            background-color: #1a202c; /* bg-gray-900 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .blog-widget {
+            text-align: center;
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .main-blog__thumb {
+            width: 100%;
+            height: 200px; /* Фиксированная высота для изображений виджетов */
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .main-blog__thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-blog__content p {
+            font-size: 0.9375rem; /* text-sm */
+            color: #cbd5e1; /* text-slate-300 */
+            line-height: 1.6;
+        }
+
+        .blog-s-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #f8fafc; /* text-slate-50 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            text-align: center; /* Центрируем заголовки виджетов */
+        }
+
+        .search-widget .custom-form {
+            display: flex;
+            border: 1px solid #475569; /* border-slate-600 */
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden;
+            background-color: #0f172a; /* bg-slate-900 */
+        }
+
+        .search-widget .custom-form input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            outline: none;
+            color: #e2e8f0; /* text-slate-200 */
+            font-size: 1rem;
+        }
+
+        .search-widget .custom-form input::placeholder {
+            color: #94a3b8; /* text-slate-400 */
+        }
+
+        .search-widget .custom-form button {
+            background-color: #a855f7; /* bg-purple-500 */
+            color: white;
+            padding: 0.75rem 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .search-widget .custom-form button:hover {
+            background-color: #c084fc; /* hover:bg-purple-400 */
+        }
+
+        /* Популярные посты и категории */
+        .single-blog {
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* gap-4 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .single-blog img {
+            width: 80px; /* w-20 */
+            height: 80px; /* h-20 */
+            object-fit: cover;
+            border-radius: 0.5rem; /* rounded-lg */
+            flex-shrink: 0;
+        }
+
+        .single-blog__content {
+            flex-grow: 1;
+        }
+
+        .single-blog__content a {
+            color: #f8fafc; /* text-slate-50 */
+            font-weight: 500; /* font-medium */
+            transition: color 0.2s ease-in-out;
+        }
+
+        .single-blog__content a:hover {
+            color: #a855f7; /* text-purple-500 */
+        }
+
+        .single-blog__content span {
+            font-size: 0.75rem; /* text-xs */
+            color: #94a3b8; /* text-slate-400 */
+            display: block; /* Чтобы дата была на новой строке */
+        }
+
+        .blog-category ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .blog-category ul li {
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        .blog-category ul li a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0; /* py-2 */
+            color: #cbd5e1; /* text-slate-300 */
+            transition: color 0.2s ease-in-out;
+        }
+
+        .blog-category ul li a:hover {
+            color: #a855f7; /* text-purple-500 */
+        }
+
+        .blog-category ul li span {
+            background-color: #4a0e7a; /* bg-purple-900 */
+            color: #d1d5db; /* text-gray-300 */
+            padding: 0.25rem 0.5rem; /* px-2 py-1 */
+            border-radius: 0.25rem; /* rounded */
+            font-size: 0.75rem; /* text-xs */
+        }
+
+        /* Новостная рассылка */
+        .newsletter p {
+            font-size: 0.9375rem; /* text-sm */
+            color: #94a3b8; /* text-slate-400 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .newsletter form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* gap-3 */
+        }
+
+        .newsletter input[type="email"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #4a0e7a;
+            border-radius: 0.5rem;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            outline: none;
+        }
+
+        .newsletter input[type="submit"] {
+            background-image: linear-gradient(to right, #a855f7, #ec4899);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .newsletter input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Теги виджета */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem; /* gap-2 */
+        }
+
+        .tags a {
+            background-color: #2d3748; /* bg-gray-800 */
+            color: #cbd5e1; /* text-slate-300 */
+            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .tags a:hover {
+            background-color: #475569; /* hover:bg-slate-600 */
+        }
+
+        /* Instagram виджет */
+        .instagram-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* grid-cols-3 */
+            gap: 0.75rem; /* gap-3 */
+        }
+
+        .instagram-images a {
+            display: block;
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+
+        .instagram-images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .instagram-images img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+<section class="blog-area pt-20 pb-20"> {# blog__area mb-100 pt-80 -> blog-area pt-20 pb-20 #}
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap -mx-4"> {# row -> flex flex-wrap -mx-4 #}
+            <div class="w-full lg:w-2/3 px-4"> {# col-xl-8 col-lg-8 col-md-12 -> w-full lg:w-2/3 px-4 #}
+                <div class="bigpost-wrapper"> {# bigpost-wrapper #}
+                    {% for post in posts %}
+                    <div class="grid-blog-item"> {# grid_blog mb-40 -> grid-blog-item #}
+                        {# Обертываем всю миниатюру в ссылку #}
+                        <a href="{% url 'blog:post_detail' post.pk %}">
+                            <div class="blog-thumb"> {# blog-thumb #}
+                                {% if post.thumbnail %}
+                                    <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+                                {% else %}
+                                    <img src="{% static 'img/blog/default.jpg' %}" alt="Default blog thumbnail">
+                                {% endif %}
+                            </div>
+                        </a>
+                        <div class="grid-blog-content"> {# grid_blog__content -> grid-blog-content #}
+                            <h4 class="pt-4">{{ post.category.title }}</h4> {# pt-20 -> pt-4, Предполагаем, что у поста есть категория #}
+                            <h2 class="b-title mb-4"> {# b-title mb-20 -> b-title mb-4 #}
+                                <a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a>
+                            </h2>
+                            <p>{{ post.short_desc|default:"It is accompanied by a case that can contain up to three different diffusers and can be used for dry storage of loose tea. The perfect way to enjoy brewing tea on low hanging fruit to identify…" }}</p> {# Используем short_desc из модели #}
+                            <div class="post-meta-list pt-2"> {# post-meta pt-10 -> post-meta-list pt-2 #}
+                                <p>Post Date: <span> {{ post.created_at|date:"d M Y" }} </span></p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="bg-gray-900 text-gray-200 p-6 rounded-lg shadow-md text-center">
+                        <h2 class="text-xl font-semibold mb-2">No blog posts found.</h2>
+                        <p>Check back later for new content!</p>
+                    </div>
+                    {% endfor %}
+
+                    {# Здесь можно добавить пагинацию, если постов много #}
+                    {# <div class="pagination flex justify-center mt-10"> ... </div> #}
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/3 px-4">
+                <div class="sidebar-wrapper mb-10">
+                    <div class="common-widget mb-8">
+                        <h4 class="blog-s-title mb-6">Categories</h4>
+                        <div class="blog-category">
+                            <ul>
+                                {% for category in categories %}
+                                    <li><a href="#">{{ category.title }}<span>({{ category.post_count }})</span></a></li>
+                                {% empty %}
+                                    <li><a href="#">No categories found.</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="common-widget instagram">
+                        <h4 class="blog-s-title mb-4">Посхалка</h4>
+                        <div class="instagram-images pt-4">
+                            <a class="popup-image" href="https://www.youtube.com/watch?v=qPN4i3PJ2Gc&list=PLdpHX1pNh2cF-WtGM9aBWAgr5iBKCI-Cs&index=4"><img src="Посхалка" alt="Жесткая посхалка"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+    {# Добавьте любой JS, который вам может понадобиться для этой страницы. #}
+    {# Например, для поиска по блогу, фильтрации по категориям/тегам, или модальных окон для Instagram. #}
+    <script>
+        // Пример JS для простой функциональности поиска (если не используется Django Forms)
+        // document.querySelector('.search-widget form').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     const searchQuery = this.querySelector('input[name="search_query"]').value;
+        //     if (searchQuery) {
+        //         window.location.href = `{% url 'blog:blog_list' %}?q=${encodeURIComponent(searchQuery)}`;
+        //     }
+        // });
+    </script>
+{% endblock %}
